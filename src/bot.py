@@ -27,5 +27,9 @@ async def user_join_exit_handler(message: Message):
             msg = "exited"
         logging.info(message.from_user['first_name'] + " " + msg)
         await message.delete()
-    except exceptions.MessageCantBeDeleted:
-        logging.info("Error! Message cannot be deleted!")
+    except (exceptions.MessageCantBeDeleted, exceptions.BotKicked) as e:
+        logging.info(f"Error! Message cannot be deleted! Reason: {e}")
+
+@dp.message_handler(commands=["start", "help"])
+async def help_message_handler(message: Message):
+    return await message.reply("Add me to a group and I'll clean that 'User has Joined' messages!")
